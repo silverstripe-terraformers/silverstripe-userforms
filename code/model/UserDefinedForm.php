@@ -854,8 +854,8 @@ class UserDefinedForm_EmailRecipient extends DataObject {
 		);
 		
 		if($this->Form()) {
-			$validEmailFields = DataObject::get("EditableEmailField", "\"ParentID\" = '" . (int)$this->FormID . "'");
-			$multiOptionFields = DataObject::get("EditableMultipleOptionField", "\"ParentID\" = '" . (int)$this->FormID . "'");
+			$validEmailFields = EditableEmailField::get("EditableEmailField", "\"ParentID\" = '" . (int)$this->FormID . "'");
+			$multiOptionFields = EditableMultipleOptionField::get("EditableMultipleOptionField", "\"ParentID\" = '" . (int)$this->FormID . "'");
 			
 			// if they have email fields then we could send from it
 			if($validEmailFields) {
