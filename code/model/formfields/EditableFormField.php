@@ -222,7 +222,7 @@ class EditableFormField extends DataObject {
 	/**
 	 * Return the custom validation fields for the field
 	 * 
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function CustomRules() {
 		$output = new ArrayList();

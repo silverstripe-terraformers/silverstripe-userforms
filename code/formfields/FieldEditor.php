@@ -66,7 +66,7 @@ class FieldEditor extends FormField {
 	/**
 	 * Return the fields for the user forms
 	 * 
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function Fields() {
 		// Don't return any fields unless we actually have the dependent parameters set on the form field
@@ -88,10 +88,10 @@ class FieldEditor extends FormField {
 	}
 	
 	/**
-	 * Return a DataObjectSet of all the addable fields to populate 
+	 * Return a ArrayList of all the addable fields to populate 
 	 * the add field menu
 	 * 
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function CreatableFields() {
 		$fields = ClassInfo::subclassesFor('EditableFormField');

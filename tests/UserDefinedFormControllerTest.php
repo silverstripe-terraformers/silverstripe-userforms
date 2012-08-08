@@ -21,7 +21,7 @@ class UserDefinedFormControllerTest extends FunctionalTest {
 		$response = $this->submitForm('Form_Form', null, array('basic-text-name' => 'Basic Value'));
 
 		// should have a submitted form field now
-		$submitted = DataObject::get('SubmittedFormField', "\"Name\" = 'basic-text-name'");
+		$submitted = SubmittedFormField::get('SubmittedFormField', "\"Name\" = 'basic-text-name'");
 		$this->assertDOSAllMatch(array('Name' => 'basic-text-name', 'Value' => 'Basic Value', 'Title' => 'Basic Text Field'), $submitted);
 	
 		// check emails

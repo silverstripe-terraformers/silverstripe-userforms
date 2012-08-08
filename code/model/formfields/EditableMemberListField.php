@@ -13,7 +13,7 @@ class EditableMemberListField extends EditableFormField {
 	
 	public function getFieldConfiguration() {
 		$groupID = ($this->getSetting('GroupID')) ? $this->getSetting('GroupID') : 0;
-		$groups = DataObject::get("Group");
+		$groups = Group::get('Group');
 		
 		if($groups) $groups = $groups->map('ID', 'Title');
 		
