@@ -26,7 +26,8 @@ class UserDefinedForm extends Page {
 		"ShowClearButton" => "Boolean",
 		'DisableSaveSubmissions' => 'Boolean',
 		'EnableLiveValidation' => 'Boolean',
-		'HideFieldLabels' => 'Boolean'
+		'HideFieldLabels' => 'Boolean',
+		'Cascading' => 'Boolean'
 	);
 	
 	/**
@@ -153,8 +154,11 @@ SQL;
 		$export->setCsvHasHeader(true);
 		$export->setExportColumns($columns);
 
+		$cascading = new CheckBoxField('Cascading', 'Cascading');
+
 		$submissions->setConfig($config);
 		$fields->addFieldToTab("Root.Submissions", $submissions);
+		$fields->addFieldsToTab("Root.FormOptions", $cascading);		
 		$fields->addFieldToTab("Root.FormOptions", new CheckboxField('DisableSaveSubmissions',_t('UserDefinedForm.SAVESUBMISSIONS',"Disable Saving Submissions to Server")));
 
 		$this->extend('updateCMSFields', $fields);
@@ -973,6 +977,31 @@ JS
 	
 			$submittedFields->push($submittedField);
 		}
+
+		if ($this->Cascading != 0 && $this->Children()) {
+			$nextPage = $this->Children()->First();
+			$idArray = Session::get("FormInfo.{$form->FormName()}.Cascading}");	
+			if (!in_array($this->ID, $idArray)) {
+				$idArray[] = $this->ID;
+				Session::set("FormInfo.{$form->FormName()}.Cascading}",$idArray);	
+			}
+			Session::set("FormInfo.{$form->FormName()}.CascadingData{$this->ID}}",
+				serialize($submittedFields));	
+			return $this->redirect($nextPage->Link());
+		}
+
+
+		if ($this->Parent()) {
+			$parentIDs = Session::get("FormInfo.{$form->FormName()}.Cascading}");	
+			foreach ($parentIDs as $id) {
+				$parentData = 
+					unserialize(Session::get("FormInfo.{$form->FormName()}.CascadingData{$id}}"));
+				foreach ($parentData as $field) {
+					$submittedFields->push($field);
+ 				}
+				Session::clear("FormInfo.{$form->FormName()}.CascadingData{$id}}");
+ 			}
+		}
 		
 		$emailData = array(
 			"Sender" => Member::currentUser(),
@@ -1047,6 +1076,7 @@ JS
 		
 		Session::clear("FormInfo.{$form->FormName()}.errors");
 		Session::clear("FormInfo.{$form->FormName()}.data");
+		Session::clear("FormInfo.{$form->FormName()}.Cascading}");	
 		
 		$referrer = (isset($data['Referrer'])) ? '?referrer=' . urlencode($data['Referrer']) : "";
 
